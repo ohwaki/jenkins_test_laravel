@@ -23,10 +23,22 @@ node {
                 error "pullに失敗しました"
             }
             // ブランチの切替
-            def CHECKOUT_RESULT = sh(script: "cd ./${repo_name} && git checkout ${dev_branch}", returnStatus: true) == 0
+            def CHECKOUT_RESULT = sh(script: "cd ./${repo_name} && git checkout ${release_branch}", returnStatus: true) == 0
             if(!CHECKOUT_RESULT) {
                 // throw error
                 error "checkoutに失敗しました"
+            }
+            // devからpull
+            def DEVELOP_PULL_RESULT = sh(script: "cd ./${repo_name} && git pull ${dev_branch}", returnStatus: true) == 0
+            if(!DEVELOP_PULL_RESULT) {
+                // throw error
+                error "developからpullに失敗しました"
+            }
+            // masterにpush
+            def DEVELOP_PULL_RESULT = sh(script: "cd ./${repo_name} && git push ${release_branch}", returnStatus: true) == 0
+            if(!DEVELOP_PULL_RESULT) {
+                // throw error
+                error "本番デプロイに失敗しました"
             }
         } else {
             // gitがない場合はclone
