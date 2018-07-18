@@ -10,7 +10,7 @@ node {
     // ソースの取得
     stage("get resource") {
         // カレントディレクトにgitリポジトリが存在するか否かの確認
-        if(fileExists("./${repo_name}")) {
+        if(fileExists("./${repo_name}") && fileExists("./${repo_name}/.git")) {
             // フェッチ
             def FETCH_RESULT = sh(script: "cd ./${repo_name} && git fetch --all", returnStatus: true) == 0
             if(!FETCH_RESULT) {
@@ -33,6 +33,16 @@ node {
             def CLONE_RESULT = sh(script: "git clone ${git_url} ${repo_name}", returnStatus: true) == 0
             if(!CLONE_RESULT) {
                 error "cloneに失敗しました"
+            }
+        }
+
+        // phpライブラリのインストール
+        stage("install libs") {
+            withEnv(["PATH+NODE=${JENKINS_HOME}/.nvm/versions/node/v6.9.5/bin/"]) {
+                def NPM_RESULT = sh(script: "cd ./${repo_name} && npm install", returnStatus: true) == 0
+                if(!NPM_RESULT) {
+                    error "npm installに失敗しました"
+                }
             }
         }
     }
