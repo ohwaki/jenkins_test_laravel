@@ -28,18 +28,6 @@ node {
                 // throw error
                 error "checkoutに失敗しました"
             }
-            // devからpull
-            def DEVELOP_PULL_RESULT = sh(script: "cd ./${repo_name} && git pull ${dev_branch}", returnStatus: true) == 0
-            if(!DEVELOP_PULL_RESULT) {
-                // throw error
-                error "developからpullに失敗しました"
-            }
-            // masterにpush
-            def DEVELOP_PULL_RESULT = sh(script: "cd ./${repo_name} && git push ${release_branch}", returnStatus: true) == 0
-            if(!DEVELOP_PULL_RESULT) {
-                // throw error
-                error "本番デプロイに失敗しました"
-            }
         } else {
             // gitがない場合はclone
             def CLONE_RESULT = sh(script: "git clone ${git_url} ${repo_name}", returnStatus: true) == 0
