@@ -10,7 +10,7 @@ node {
     // ソースの取得
     stage("get resource") {
         // カレントディレクトにgitリポジトリが存在するか否かの確認
-        if(fileExists("./${repo_name}") && fileExists("./${repo_name}/.git")) {
+        if(fileExists("./${repo_name}")) {
             // フェッチ
             def FETCH_RESULT = sh(script: "cd ./${repo_name} && git fetch --all", returnStatus: true) == 0
             if(!FETCH_RESULT) {
