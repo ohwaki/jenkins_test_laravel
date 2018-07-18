@@ -3,7 +3,7 @@
 def err_msg = ""
 def repo_name = "jenkins_test_laravel"
 def git_url = "git@sample.github.com:ohwaki/${repo_name}.git"
-def dev_branch = "dev"
+def dev_branch = "develop"
 def release_branch = "master"
 
 node {
