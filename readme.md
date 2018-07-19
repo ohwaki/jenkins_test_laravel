@@ -14,4 +14,13 @@
  mkdir .ssh
  sudo chown -R jenkins:jenkins .ssh
  ssh-keygen -t rsa // ここで生成した公開鍵を github に登録する
+ 
+ sudo curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+ sudo python get-pip.py
+ sudo pip install awscli
+ sudo su – jenkins
+ sudo -u jenkins aws configure
 ```
+
+#### ジェンキンスプラグイン
+Pipeline: AWS Steps
