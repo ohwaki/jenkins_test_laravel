@@ -27,3 +27,13 @@
 Pipeline: AWS Steps
 Groovy
 SSH Agent Plugin
+
+
+Host test_ec2
+  HostName  13.231.191.7
+  Port      22
+  Protocol  2
+  User      ec2-user
+  IdentityFile ~jenkins/.ssh/private_ohwaki.pem
+  
+  sudo -u jenkins ssh test_ec2
