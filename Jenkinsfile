@@ -52,8 +52,8 @@ node {
         /$
         def AWS_RESULT = sh (script: command, returnStdout: true)
         print AWS_RESULT
-        if(AWS_RESULT) {
-            def RESULT_ARRAY = parseJson(AWS_RESULT)
+        def RESULT_ARRAY = parseJson(AWS_RESULT)
+        if(RESULT_ARRAY['Reservations']) {
             TARGET_INSTANCE_ID = RESULT_ARRAY['Reservations']['Instances'][0]['InstanceId'][0]
             TARGET_INSTANCE_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
             // 起動しているかどうかチェック
@@ -79,7 +79,7 @@ node {
             // throw error
             error "instanceの作成に失敗しました"
         }
-        def RESULT_ARRAY = parseJson(CREATE_INSTANCE_RESULT)
+        RESULT_ARRAY = parseJson(CREATE_INSTANCE_RESULT)
         TARGET_INSTANCE_ID = RESULT_ARRAY['Instances'][0]['InstanceId']
         TARGET_INSTANCE_PUB_IP = RESULT_ARRAY['Instances'][0]['PublicIpAddress']
         print TARGET_INSTANCE_ID
