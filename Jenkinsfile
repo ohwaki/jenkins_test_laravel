@@ -14,7 +14,7 @@ def parseJson(text) {
     return new groovy.json.JsonSlurperClassic().parseText(text)
 }
 
-node(${BRANCH_NAME}) {
+node("master") {
     // ソースの取得
     // stage("Get Git Resource") {
     //     // カレントディレクトにgitリポジトリが存在するか否かの確認
