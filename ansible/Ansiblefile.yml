@@ -2,6 +2,9 @@
   become: true
   tasks:
     - name: add a new user      #Linuxユーザの作成
+      user: name=test_ohwaki state=present group=wheel
+
+    - name: add a new user      #Linuxユーザのグループ変更
       user: name=test_ohwaki state=present
 
     - name: mkdir .ssh          #.sshフォルダの作成
