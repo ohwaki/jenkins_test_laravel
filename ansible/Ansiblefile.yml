@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: web
   sudo: true
   tasks:
     - name: add a new user      #Linuxユーザの作成
