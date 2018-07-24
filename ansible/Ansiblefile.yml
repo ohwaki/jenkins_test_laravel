@@ -1,4 +1,4 @@
-- hosts: "{{ host }}"
+- hosts: web
   sudo: true
   tasks:
     - name: add a new user      #Linuxユーザのパスワード生成

@@ -85,7 +85,7 @@ node("master") {
         print TARGET_INSTANCE_ID
         // タグ名を作成
         command = $/
-            /usr/bin/aws --region ap-northeast-1 ec2 create-tags --resources  ${TARGET_INSTANCE_ID} --tags '[{"Key": "Name", "Value": "test_jenkins"}]'
+            /usr/bin/aws --region ap-northeast-1 ec2 create-tags --resources ${TARGET_INSTANCE_ID} --tags '[{"Key": "Name", "Value": "test_jenkins"}]'
         /$
         def CREATE_INSTANCE_TAG_RESULT = sh (script: command, returnStdout: true)
         error "instanceを作成中です。runningになってから再度実行してください。"
@@ -179,7 +179,8 @@ node("master") {
     }
 
     stage('AnsibleTest') {
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && sudo sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' hosts"
         // サーバを初期設定
-        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem' --extra-vars \"host=${TARGET_INSTANCE_PUB_IP}\""
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
 }
