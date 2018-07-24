@@ -1,5 +1,5 @@
 - hosts: web
-  sudo: true
+  become: true
   tasks:
     - name: add a new user #Linuxユーザのパスワード生成
       user:
