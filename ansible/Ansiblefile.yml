@@ -2,16 +2,16 @@
   sudo: true
   tasks:
     - name: add a new user      #Linuxユーザの作成
-      user: name=test_ohwaki state=present group=wheel
+      shell: sudo useradd test_ohwaki2
 
     - name: add a new user      #Linuxユーザのグループ変更
-      user: name=test_ohwaki state=present
+      shell: sudo usermod -aG wheel test_ohwaki2
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
-      shell: sudo cp -R ~/.ssh /home/test_ohwaki/.ssh
+      shell: sudo cp -R ~/.ssh /home/test_ohwaki2/.ssh
 
     - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
-      shell: sudo chown -R test_ohwaki:test_ohwaki ~test_ohwaki/.ssh
+      shell: sudo chown -R test_ohwaki2:test_ohwaki2 ~test_ohwaki2/.ssh
 
     - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
-      shell: sudo chmod -R go-rwx ~test_ohwaki/.ssh
+      shell: sudo chmod -R go-rwx ~test_ohwaki2/.ssh
