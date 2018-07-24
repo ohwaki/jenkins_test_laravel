@@ -2,7 +2,11 @@
   sudo: true
   tasks:
     - name: add a new user      #Linuxユーザのパスワード生成
-      user: name=test_ohwaki2 password=bzuh6sdgjhd state=present home=/home/test_ohwaki2
+      user:
+        name: test_ohwaki2
+        password: {{ bzuh6sdgjhd | password_hash('sha512') }}
+        state: present
+        home: /home/test_ohwaki2
 
     - name: add a new user      #Linuxユーザのグループ変更
       shell: sudo usermod -aG wheel test_ohwaki2
