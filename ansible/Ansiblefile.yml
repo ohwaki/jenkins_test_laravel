@@ -1,4 +1,4 @@
-- name: test
+- hosts: localhost
   tasks:
     - name: output message.
       debug: msg="aaaaaa"
