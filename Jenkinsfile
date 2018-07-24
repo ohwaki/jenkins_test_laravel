@@ -180,6 +180,6 @@ node("master") {
 
     stage('AnsibleTest') {
           // 指定ファイルの転送
-          sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook Ansiblefile.yml"
+          sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key="~jenkins/.ssh/private_ohwaki.pem""
        }
 }
