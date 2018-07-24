@@ -8,4 +8,4 @@
       user: name=test_ohwaki state=present
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
-      copy: src=~/.ssh dest=/home/test_ohwaki/.ssh owner=test_ohwaki group=test_ohwaki mode=600
+      shell: sudo cp -R ~/.ssh /home/test_ohwaki/.ssh
