@@ -8,7 +8,7 @@
       shell: sudo usermod -aG wheel test_ohwaki2
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
-      shell: sudo cp -R ~/.ssh /home/test_ohwaki2/.ssh
+      shell: sudo cp -R /home/ec2-user/.ssh /home/test_ohwaki2/.ssh
 
     - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
       shell: sudo chown -R test_ohwaki2:test_ohwaki2 ~test_ohwaki2/.ssh
