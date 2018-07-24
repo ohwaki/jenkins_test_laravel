@@ -163,21 +163,21 @@ node("master") {
 
     // 1号機を切り離し
     stage("Remove AWS Instance To Tatget") {
-        def command = $/
+        def command_1 = $/
             /usr/bin/aws --region ap-northeast-1 ec2 describe-instances \
             --filter "Name=tag:Name, Values=test_jenkins_1"
         /$
-        def AWS_RESULT = sh (script: command, returnStdout: true)
+        def AWS_RESULT = sh (script: command_1, returnStdout: true)
         print AWS_RESULT
         def RESULT_ARRAY = parseJson(AWS_RESULT)
         TARGET_INSTANCE_1_ID = RESULT_ARRAY['Reservations']['Instances'][0]['InstanceId'][0]
         TARGET_INSTANCE_1_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
 
-        def command = $/
+        def command_2 = $/
             /usr/bin/aws --region ap-northeast-1 elbv2 deregister-targets \
             --target-group-arn ${TARGET_GROUP_ARN} --targets Id=${TARGET_INSTANCE_1_ID}
         /$
-        def REMOVE_INSTANCE_RESULT = sh(script: command, returnStatus: true) == 0
+        def REMOVE_INSTANCE_RESULT = sh(script: command_2, returnStatus: true) == 0
         print REMOVE_INSTANCE_RESULT
         if( ! REMOVE_INSTANCE_RESULT) {
             // throw error
