@@ -195,10 +195,10 @@ node("master") {
                 ssh -o "StrictHostKeyChecking=no" -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} pwd
             /$
             def command_2 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} sudo service httpd start
+                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} echo bzuh6sdgjhd | sudo -S service httpd start
             /$
             def command_3 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} sudo service httpd restart
+                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} echo bzuh6sdgjhd | sudo -S service httpd restart
             /$
             sh command_1
             sh command_2
