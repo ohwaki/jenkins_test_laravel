@@ -1,0 +1,8 @@
+- hosts: targets
+  user: root
+  tasks:
+    - name: output message.
+      debug: msg="aaaaaa"
+
+    - name: output fruits
+      debug: msg="We want bbbbb ccccc !"

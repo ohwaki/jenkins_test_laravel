@@ -177,4 +177,9 @@ node("master") {
             error "ec2のalb接続に失敗しました"
         }
     }
+
+    stage('AnsibleTest') {
+          // 指定ファイルの転送
+          sh "cd ./ansible && ansible-playbook Ansiblefile.yml"
+       }
 }
