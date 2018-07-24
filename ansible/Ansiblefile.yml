@@ -1,5 +1,4 @@
-- hosts: targets
-  user: root
+- name: test
   tasks:
     - name: output message.
       debug: msg="aaaaaa"
