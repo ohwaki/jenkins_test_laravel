@@ -185,7 +185,6 @@ node("master") {
         def command_2 = $/
             ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key="~jenkins/.ssh/private_ohwaki.pem"
         /$
-        sh command_1
-        sh command_2
+        sh command_1 && command_2
     }
 }
