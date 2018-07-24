@@ -1,5 +1,5 @@
 - hosts: web
-  sudo: true
+  become: true
   tasks:
     - name: add a new user      #Linuxユーザの作成
       user: name=test_ohwaki state=present
