@@ -1,2 +1,4 @@
 [web]
 target_host
+[web1]
+target_1_host

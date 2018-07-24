@@ -125,6 +125,7 @@ node("master") {
     stage('AnsibleTest') {
         // ターゲットのIPを変更
         sh "sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
+        sh "sed -ri 's/target_host/${TARGET_INSTANCE_1_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
         // サーバを初期設定
         sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
@@ -167,23 +168,7 @@ node("master") {
 
     // 1号機を更新
     stage("Ssh") {
-        print TARGET_INSTANCE_1_PUB_IP
-        sshagent([]) {
-            def ip = TARGET_INSTANCE_1_PUB_IP
-            print ip
-            def command_1 = $/
-                ssh -o "StrictHostKeyChecking=no" -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} pwd
-            /$
-            def command_2 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} echo 'bzuh6sdgjhd' | sudo -S service httpd start
-            /$
-            def command_3 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l test_ohwaki2 -p 40012 ${ip} echo 'bzuh6sdgjhd' | sudo -S service httpd restart
-            /$
-            sh command_1
-            sh command_2
-            sh command_3
-        }
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts server_restart.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
 
     // 1号機をターゲットに追加
