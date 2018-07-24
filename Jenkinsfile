@@ -122,26 +122,6 @@ node("master") {
         TARGET_GROUP_ARN = RESULT_ARRAY['TargetGroups'][0]['TargetGroupArn']
     }
 
-    stage("Ssh") {
-        print TARGET_INSTANCE_PUB_IP
-        sshagent([]) {
-            def ip = TARGET_INSTANCE_PUB_IP
-            print ip
-            def command_1 = $/
-                ssh -o "StrictHostKeyChecking=no" -i ~jenkins/.ssh/private_ohwaki.pem -l ec2-user -p 22 ${ip} pwd
-            /$
-            def command_2 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l ec2-user -p 22 ${ip} sudo service httpd start
-            /$
-            def command_3 = $/
-                ssh -i ~jenkins/.ssh/private_ohwaki.pem -l ec2-user -p 22 ${ip} sudo service httpd restart
-            /$
-            sh command_1
-            sh command_2
-            sh command_3
-        }
-    }
-
     stage('AnsibleTest') {
         // ターゲットのIPを変更
         sh "sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
