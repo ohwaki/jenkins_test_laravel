@@ -1,7 +1,14 @@
-- hosts: localhost
+- hosts: all
+  sudo: true
   tasks:
-    - name: output message.
-      debug: msg="aaaaaa"
+    - name: add a new user      #Linuxユーザの作成
+      user: name=test_ohwaki state=present
 
-    - name: output fruits
-      debug: msg="We want bbbbb ccccc !"
+    - name: mkdir .ssh          #.sshフォルダの作成
+      file: dest=/home/test_ohwaki/.ssh/ state=directory owner=test_ohwaki group=test_ohwaki mode=700
+
+    - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
+      file: dest=/home/testuser2/.ssh/authorized_keys state=touch owner=testuser2 group=testuser2 mode=600
+
+    - name: copy publickey     #公開鍵を貼付け
+      copy: src=~/id_rsa.pub dest=/home/testuser2/.ssh/authorized_keys
