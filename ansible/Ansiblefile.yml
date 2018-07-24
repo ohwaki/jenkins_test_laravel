@@ -19,3 +19,6 @@
 
     - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
       shell: sudo chmod -R go-rwx ~test_ohwaki2/.ssh
+
+    - name: add authorized keys #port を変更
+      shell: sudo sed -ri 's/;Port =/Port = 40012/g' /etc/ssh/sshd_config
