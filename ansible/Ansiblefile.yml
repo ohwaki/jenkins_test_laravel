@@ -1,30 +1,30 @@
 - hosts: web
   sudo: true
   tasks:
-    - name: add a new user      #Linuxユーザのパスワード生成
+    - name: add a new user #Linuxユーザのパスワード生成
       user:
         name: test_ohwaki2
         password: "{{ 'bzuh6sdgjhd' | password_hash('sha512') }}"
         state: present
         home: /home/test_ohwaki2
 
-    - name: add a new user      #Linuxユーザのグループ変更
+    - name: change user group #Linuxユーザのグループ変更
       shell: sudo usermod -aG wheel test_ohwaki2
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
       shell: sudo cp -R /home/ec2-user/.ssh /home/test_ohwaki2/.ssh
 
-    - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
+    - name: change keys owner #.ssh以下にauthorized_keysの権限変更
       shell: sudo chown -R test_ohwaki2:test_ohwaki2 ~test_ohwaki2/.ssh
 
-    - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
+    - name: change keys role #.ssh以下にauthorized_keysの権限変更
       shell: sudo chmod -R go-rwx ~test_ohwaki2/.ssh
 
-    - name: add authorized keys #port を変更
+    - name: change port #port を変更
       shell: sudo sed -ri 's/#Port 22/Port 40012/g' /etc/ssh/sshd_config
 
-    - name: add authorized keys #port を変更
+    - name: deny ec2-user #ec2-user のsshアクセス権限剥奪
       shell: sudo echo "DenyUsers ec2-user" >> /etc/ssh/sshd_config
 
-    - name: add authorized keys #sshd 再起動
+    - name: restart sshd #sshd 再起動
       shell: sudo systemctl restart sshd.service
