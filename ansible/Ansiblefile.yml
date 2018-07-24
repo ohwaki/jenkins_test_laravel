@@ -8,7 +8,4 @@
       file: dest=/home/test_ohwaki/.ssh/ state=directory owner=test_ohwaki group=test_ohwaki mode=700
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
-      file: dest=/home/testuser2/.ssh/authorized_keys state=touch owner=testuser2 group=testuser2 mode=600
-
-    - name: copy publickey     #公開鍵を貼付け
-      copy: src=~/id_rsa.pub dest=/home/testuser2/.ssh/authorized_keys
+      copy: src=/home/ec2-user/.ssh/authorized_keys dest=/home/test_ohwaki/.ssh/authorized_keys state=touch owner=test_ohwaki group=test_ohwaki mode=600
