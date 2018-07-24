@@ -181,7 +181,7 @@ node("master") {
 
     // 1号機を更新
     stage("Ssh") {
-        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts server_restart.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts server_restart.yml -u test_ohwaki2 -p 40012 --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
 
     // 1号機をターゲットに追加
