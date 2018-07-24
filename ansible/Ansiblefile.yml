@@ -4,6 +4,9 @@
     - name: add a new user      #Linuxユーザの作成
       shell: sudo useradd test_ohwaki2
 
+    - name: add a new user      #Linuxユーザのパスワード生成
+      user: sudo name=test_ohwaki2 password=bzuh6sdgjhd
+
     - name: add a new user      #Linuxユーザのグループ変更
       shell: sudo usermod -aG wheel test_ohwaki2
 
