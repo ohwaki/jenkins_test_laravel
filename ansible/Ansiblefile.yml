@@ -9,3 +9,9 @@
 
     - name: add authorized keys #.ssh以下にauthorized_keysファイルの作成
       shell: sudo cp -R ~/.ssh /home/test_ohwaki/.ssh
+
+    - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
+      shell: sudo chown -R test_ohwaki:test_ohwaki ~test_ohwaki/.ssh
+
+    - name: add authorized keys #.ssh以下にauthorized_keysの権限変更
+      shell: sudo chmod -R go-rwx ~test_ohwaki/.ssh
