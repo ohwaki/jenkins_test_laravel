@@ -5,4 +5,4 @@
       shell: echo 'bzuh6sdgjhd' | sudo -S service httpd start
 
     - name: apache restart #apache 再起動
-      shell: echo 'bzuh6sdgjhd' | sudo -S service httpd restatus
+      shell: echo 'bzuh6sdgjhd' | sudo -S service httpd restart
