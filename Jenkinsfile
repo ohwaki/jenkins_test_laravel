@@ -179,12 +179,7 @@ node("master") {
     }
 
     stage('AnsibleTest') {
-        def command_1 = $/
-            cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible
-        /$
-        def command_2 = $/
-            ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key="~jenkins/.ssh/private_ohwaki.pem"
-        /$
-        sh command_1 && command_2
+        // 指定ファイルの転送
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
 }
