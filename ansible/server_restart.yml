@@ -1,8 +1,9 @@
 - hosts: web1
   become: true
+  become_user: test_ohwaki2
   tasks:
     - name: apache start #apache 起動
-      shell: echo 'bzuh6sdgjhd' | sudo -S service httpd start
+      shell: echo 'bzuh6sdgjhd' | sudo -S systemctl start httpd.service
 
     - name: apache restart #apache 再起動
-      shell: echo 'bzuh6sdgjhd' | sudo -S service httpd restart
+      shell: echo 'bzuh6sdgjhd' | sudo -S systemctl restart httpd.service

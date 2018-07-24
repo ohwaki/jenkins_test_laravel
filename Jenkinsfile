@@ -94,6 +94,7 @@ node("master") {
         error "instanceを作成中です。runningになってから再度実行してください。"
     }
 
+    // ALBが存在しなければ作成
     stage("Create AWS ALB") {
         def command = $/
             /usr/bin/aws --region ap-northeast-1 elbv2 create-load-balancer \
@@ -107,6 +108,7 @@ node("master") {
         }
     }
 
+    // ターゲットが存在しなければ作成
     stage("Create AWS Tatget") {
         def command = $/
             /usr/bin/aws --region ap-northeast-1 elbv2 create-target-group \
@@ -135,6 +137,7 @@ node("master") {
         TARGET_INSTANCE_1_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
     }
 
+    // 2号機を設定
     stage('AnsibleTest') {
         // ターゲットのIPを変更
         sh "sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
@@ -143,6 +146,7 @@ node("master") {
         sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
     }
 
+    // 2号機をALBに追加
     stage("Set AWS Instance To Tatget") {
         def command = $/
             /usr/bin/aws --region ap-northeast-1 elbv2 register-targets \
