@@ -122,6 +122,19 @@ node("master") {
         TARGET_GROUP_ARN = RESULT_ARRAY['TargetGroups'][0]['TargetGroupArn']
     }
 
+    // 1号機を取得
+    stage("Get AWS Instance_1") {
+        def command_1 = $/
+            /usr/bin/aws --region ap-northeast-1 ec2 describe-instances \
+            --filter "Name=tag:Name, Values=test_jenkins_1"
+        /$
+        def AWS_RESULT = sh (script: command_1, returnStdout: true)
+        print AWS_RESULT
+        def RESULT_ARRAY = parseJson(AWS_RESULT)
+        TARGET_INSTANCE_1_ID = RESULT_ARRAY['Reservations']['Instances'][0]['InstanceId'][0]
+        TARGET_INSTANCE_1_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
+    }
+
     stage('AnsibleTest') {
         // ターゲットのIPを変更
         sh "sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
