@@ -161,7 +161,7 @@ node("master") {
                 ssh -i ~jenkins/.ssh/private_ohwaki.pem -l ec2-user -p 22 ${ip} sudo service httpd restart
             /$
             sh command_1
-            sh command_3
+            sh command_2
             sh command_3
         }
     }
@@ -179,7 +179,13 @@ node("master") {
     }
 
     stage('AnsibleTest') {
-          // 指定ファイルの転送
-          sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key="~jenkins/.ssh/private_ohwaki.pem""
-       }
+        def command_1 = $/
+            cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible
+        /$
+        def command_2 = $/
+            ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key="~jenkins/.ssh/private_ohwaki.pem"
+        /$
+        sh command_1
+        sh command_2
+    }
 }
