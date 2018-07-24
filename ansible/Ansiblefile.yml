@@ -22,3 +22,9 @@
 
     - name: add authorized keys #port を変更
       shell: sudo sed -ri 's/#Port 22/Port 40012/g' /etc/ssh/sshd_config
+
+    - name: add authorized keys #port を変更
+      shell: sudo echo "DenyUsers ec2-user" >> /etc/ssh/sshd_config
+
+    - name: add authorized keys #sshd 再起動
+      shell: sudo systemctl restart sshd.service
