@@ -1,0 +1,96 @@
+#!groovy
+
+def err_msg = ""
+def repo_name = "jenkins_test_laravel"
+def git_url = "git@sample.github.com:ohwaki/${repo_name}.git"
+def dev_branch = "develop"
+def release_branch = "master"
+
+def TARGET_GROUP_ARN = ""
+def TARGET_INSTANCE_ID = ""
+def TARGET_INSTANCE_PUB_IP = ""
+def TARGET_INSTANCE_1_ID = ""
+def TARGET_INSTANCE_1_PUB_IP = ""
+
+def parseJson(text) {
+    return new groovy.json.JsonSlurperClassic().parseText(text)
+}
+
+node("master") {
+    // 1号機を取得
+    stage("Get AWS Instance_1") {
+        def command_1 = $/
+            /usr/bin/aws --region ap-northeast-1 ec2 describe-instances \
+            --filter "Name=tag:Name, Values=test_jenkins_1"
+        /$
+        def AWS_RESULT = sh (script: command_1, returnStdout: true)
+        print AWS_RESULT
+        def RESULT_ARRAY = parseJson(AWS_RESULT)
+        TARGET_INSTANCE_1_ID = RESULT_ARRAY['Reservations']['Instances'][0]['InstanceId'][0]
+        TARGET_INSTANCE_1_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
+    }
+
+    // 2号機を設定
+    stage('AnsibleTest') {
+        // ターゲットのIPを変更
+        sh "sed -ri 's/target_host/${TARGET_INSTANCE_PUB_IP}/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
+        sh "sed -ri 's/target_1_host/${TARGET_INSTANCE_1_PUB_IP}:40012/g' /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible/hosts"
+        // サーバを初期設定
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts Ansiblefile.yml -u ec2-user --private-key='~jenkins/.ssh/private_ohwaki.pem'"
+    }
+
+    // 2号機をALBに追加
+    stage("Set AWS Instance To Tatget") {
+        def command = $/
+            /usr/bin/aws --region ap-northeast-1 elbv2 register-targets \
+            --target-group-arn ${TARGET_GROUP_ARN} --targets Id=${TARGET_INSTANCE_ID}
+        /$
+        def SET_INSTANCE_RESULT = sh(script: command, returnStatus: true) == 0
+        if( ! SET_INSTANCE_RESULT) {
+            // throw error
+            error "ec2のalb接続に失敗しました"
+        }
+    }
+
+    // 1号機を切り離し
+    stage("Remove AWS Instance To Tatget") {
+        def command_1 = $/
+            /usr/bin/aws --region ap-northeast-1 ec2 describe-instances \
+            --filter "Name=tag:Name, Values=test_jenkins_1"
+        /$
+        def AWS_RESULT = sh (script: command_1, returnStdout: true)
+        print AWS_RESULT
+        def RESULT_ARRAY = parseJson(AWS_RESULT)
+        TARGET_INSTANCE_1_ID = RESULT_ARRAY['Reservations']['Instances'][0]['InstanceId'][0]
+        TARGET_INSTANCE_1_PUB_IP = RESULT_ARRAY['Reservations']['Instances'][0]['PublicIpAddress'][0]
+
+        def command_2 = $/
+            /usr/bin/aws --region ap-northeast-1 elbv2 deregister-targets \
+            --target-group-arn ${TARGET_GROUP_ARN} --targets Id=${TARGET_INSTANCE_1_ID}
+        /$
+        def REMOVE_INSTANCE_RESULT = sh(script: command_2, returnStatus: true) == 0
+        print REMOVE_INSTANCE_RESULT
+        if( ! REMOVE_INSTANCE_RESULT) {
+            // throw error
+             error "ec2のalb切り離しに失敗しました"
+        }
+    }
+
+    // 1号機を更新
+    stage("Ssh") {
+        sh "cd /var/lib/jenkins/workspace/jenkins_test_laravel@script/ansible && ansible-playbook -i hosts server_restart.yml -u test_ohwaki2 --private-key='~jenkins/.ssh/private_ohwaki.pem'"
+    }
+
+    // 1号機をターゲットに追加
+    stage("Set AWS Instance To Tatget") {
+        def command = $/
+            /usr/bin/aws --region ap-northeast-1 elbv2 register-targets \
+            --target-group-arn ${TARGET_GROUP_ARN} --targets Id=${TARGET_INSTANCE_1_ID}
+        /$
+        def SET_INSTANCE_RESULT = sh(script: command, returnStatus: true) == 0
+        if( ! SET_INSTANCE_RESULT) {
+            // throw error
+            error "ec2のalb接続に失敗しました"
+        }
+    }
+}
